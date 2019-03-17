@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "name": "northwind",
+  "private": true,
+  "devDependencies": {
+
+  },
+  "dependencies": {
+    "bootsrap": "4.3.1"
+  }
+}
