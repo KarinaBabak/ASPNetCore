@@ -1,12 +1,12 @@
-﻿using NorthwindSystem.Data.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NorthwindSystem.Data.DTOModels;
 
 namespace NorthwindSystem.Models
 {
     public class CreateUpdateProductViewModel
     {
-        public Product Product { get; set; }
-        public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<Supplier> Suppliers { get; set; }
+        public ProductDto Product { get; set; }
+        public IEnumerable<CategoryDto> Categories { get; set; }
+        public IEnumerable<SupplierDto> Suppliers { get; set; }
     }
 }

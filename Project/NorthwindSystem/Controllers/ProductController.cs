@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindSystem.BLL.Interface;
-using NorthwindSystem.Data.Models;
+using NorthwindSystem.Data.DTOModels;
 using NorthwindSystem.Models;
 
 namespace NorthwindSystem.Controllers
@@ -36,7 +35,7 @@ namespace NorthwindSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Product product)
+        public async Task<IActionResult> Add(ProductDto product)
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +59,7 @@ namespace NorthwindSystem.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(Product product)
+        public async Task<IActionResult> Update(ProductDto product)
         {
             if (!ModelState.IsValid)
             {
@@ -76,7 +75,7 @@ namespace NorthwindSystem.Controllers
             return new CreateUpdateProductViewModel()
             {
                 Categories = await _categoryService.GetAll(),
-                Suppliers = new List<Supplier>(), // await _supplierService.GetAll(),
+                Suppliers = new List<SupplierDto>(), // await _supplierService.GetAll(),
                 Product = productId.HasValue ? await _productService.GetById(productId.Value) : null
             };
         }

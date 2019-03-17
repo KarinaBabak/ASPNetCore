@@ -2,10 +2,11 @@
   "version": "1.0.0",
   "name": "northwind",
   "private": true,
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "dependencies": {
-    "bootsrap": "4.3.1"
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.3.1",
+    "jquery-validation": "^1.19.0",
+    "jquery-validation-unobtrusive": "^3.2.11"
   }
 }

@@ -15,6 +15,7 @@ using NorthwindSystem.BLL;
 using NorthwindSystem.BLL.Implementation;
 using NorthwindSystem.BLL.Interface;
 using NorthwindSystem.Data;
+using NorthwindSystem.Middleware;
 using NorthwindSystem.Persistence;
 
 namespace NorthwindSystem
@@ -70,12 +71,12 @@ namespace NorthwindSystem
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseNodeModules(env.ContentRootPath);
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
