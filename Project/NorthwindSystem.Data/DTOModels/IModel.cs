@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NorthwindSystem.Data.Models
+namespace NorthwindSystem.Data.DTOModels
 {
     public interface IModel
     {

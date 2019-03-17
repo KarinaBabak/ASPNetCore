@@ -4,12 +4,12 @@ using System;
 
 namespace NorthwindSystem.BLL
 {
-    public class Configuration : ILocalConfiguration
+    public class BLLConfiguration : ILocalConfiguration
     {
         private readonly IConfiguration _configuration;
         private readonly string _maxProductNumber = "ProductsMaxNumber";
 
-        public Configuration(IConfiguration configuration)
+        public BLLConfiguration(IConfiguration configuration)
         {
             _configuration = configuration;
         }

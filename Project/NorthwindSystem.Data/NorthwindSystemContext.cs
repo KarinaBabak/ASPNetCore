@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using NorthwindSystem.Data.Entities;
 
@@ -8,13 +7,6 @@ namespace NorthwindSystem.Data
 {
     public partial class NorthwindSystemContext : DbContext
     {
-        private IConfiguration _configuration;
-
-        public NorthwindSystemContext(IConfiguration configuration)
-        {
-            this._configuration = configuration;
-        }
-
         public NorthwindSystemContext(DbContextOptions<NorthwindSystemContext> options)
             : base(options)
         {
@@ -39,7 +31,7 @@ namespace NorthwindSystem.Data
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(this._configuration.GetConnectionString("NorthwindSystem"));
+                //optionsBuilder.UseSqlServer(this._configuration.GetConnectionString("NorthwindSystem"));
             }
         }
 

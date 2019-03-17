@@ -1,7 +1,7 @@
 ﻿
-namespace NorthwindSystem.Data.Models
+namespace NorthwindSystem.Data.DTOModels
 {
-    public class Supplier : IModel
+    public class SupplierDto : IModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace NorthwindSystem.Data.Models
+namespace NorthwindSystem.Data.DTOModels
 {
-    public class Product : IModel
+    public class ProductDto : IModel
     {
         [ScaffoldColumn(false)]
         public int Id { get; set; }

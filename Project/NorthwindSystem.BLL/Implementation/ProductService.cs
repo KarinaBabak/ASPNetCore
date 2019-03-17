@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using NorthwindSystem.BLL.Interface;
-using NorthwindSystem.Data.Models;
+using NorthwindSystem.Data.DTOModels;
 using NorthwindSystem.Persistence.Interface;
 using ProductDAOEntity = NorthwindSystem.Data.Entities.Product;
 
@@ -13,26 +13,28 @@ namespace NorthwindSystem.BLL.Implementation
     {
         private readonly IProductRepository _productRepository;
         private readonly ILocalConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository, ILocalConfiguration config)
+        public ProductService(IProductRepository repository, ILocalConfiguration config, IMapper mapper)
         {
             _productRepository = repository;
             _config = config;
+            _mapper = mapper;
         }
 
-        public async Task<int> Add(Product entity)
+        public async Task<int> Add(ProductDto entity)
         {
-            var product = Mapper.Map<Product, ProductDAOEntity>(entity);
+            var product = _mapper.Map<ProductDAOEntity>(entity);
             return await _productRepository.Add(product);
         }
 
-        public async Task Delete(Product entity)
+        public async Task Delete(ProductDto entity)
         {
-            var product = Mapper.Map<Product, ProductDAOEntity>(entity);
+            var product = _mapper.Map<ProductDAOEntity>(entity);
             await _productRepository.Delete(product);
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<ProductDto>> GetAll()
         {
             IEnumerable<ProductDAOEntity> items;
             int maxProductNumber = _config.GetMaxProductsNumber();
@@ -44,19 +46,19 @@ namespace NorthwindSystem.BLL.Implementation
             {
                 items = await _productRepository.GetAll();
             }
-            
-            return Mapper.Map<IEnumerable<ProductDAOEntity>, IEnumerable<Product>>(items);
+
+            return _mapper.Map<IEnumerable<ProductDto>>(items);
         }
 
-        public async Task<Product> GetById(int entityId)
+        public async Task<ProductDto> GetById(int entityId)
         {
             var product = await _productRepository.GetById(entityId);
-            return Mapper.Map<ProductDAOEntity, Product>(product);
+            return _mapper.Map<ProductDto>(product);
         }
 
-        public async Task Update(Product entity)
+        public async Task Update(ProductDto entity)
         {
-            var product = Mapper.Map<Product, ProductDAOEntity>(entity);
+            var product = _mapper.Map<ProductDAOEntity>(entity);
             await _productRepository.Update(product);
         }
     }

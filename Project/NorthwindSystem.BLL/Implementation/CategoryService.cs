@@ -3,47 +3,49 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using NorthwindSystem.BLL.Interface;
-using NorthwindSystem.Data.Models;
+using NorthwindSystem.Data.DTOModels;
 using NorthwindSystem.Persistence.Interface;
 using CategoryDAOEntity = NorthwindSystem.Data.Entities.Category;
 
 namespace NorthwindSystem.BLL.Implementation
 {
-    public class CategoryService : ICategoryService
+    public class Configuration : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public CategoryService(ICategoryRepository repository)
+        public Configuration(ICategoryRepository repository, IMapper mapper)
         {
-            this._categoryRepository = repository;
+            _categoryRepository = repository;
+            _mapper = mapper;
         }
 
-        public async Task<int> Add(Category entity)
+        public async Task<int> Add(CategoryDto entity)
         {
-            var category = Mapper.Map<Category, CategoryDAOEntity>(entity);
+            var category = _mapper.Map<CategoryDAOEntity>(entity);
             return await _categoryRepository.Add(category);
         }
 
-        public async Task Delete(Category entity)
+        public async Task Delete(CategoryDto entity)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Category>> GetAll()
+        public async Task<IEnumerable<CategoryDto>> GetAll()
         {
             var categories = await _categoryRepository.GetAll();
-            return Mapper.Map<IEnumerable<CategoryDAOEntity>, IEnumerable<Category>>(categories);
+            return _mapper.Map<IEnumerable<CategoryDto>>(categories);
         }
 
-        public async Task<Category> GetById(int entityId)
+        public async Task<CategoryDto> GetById(int entityId)
         {
             var category = await _categoryRepository.GetById(entityId);
-            return Mapper.Map<CategoryDAOEntity, Category>(category);
+            return _mapper.Map<CategoryDto>(category);
         }
 
-        public async Task Update(Category entity)
+        public async Task Update(CategoryDto entity)
         {
-            var category = Mapper.Map<Category, CategoryDAOEntity>(entity);
+            var category = _mapper.Map<CategoryDAOEntity>(entity);
             await _categoryRepository.Update(category);
         }
     }

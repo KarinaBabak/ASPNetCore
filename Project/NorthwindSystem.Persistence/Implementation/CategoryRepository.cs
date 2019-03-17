@@ -1,27 +1,25 @@
-﻿using System;
-using NorthwindSystem.Persistence.Interface;
+﻿using System.Linq;
 using System.Collections.Generic;
-using CategoryDTOModel = NorthwindSystem.Data.Models.Category;
-using CategoryDAOEntity = NorthwindSystem.Data.Entities.Category;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using NorthwindSystem.Persistence.Interface;
+using CategoryDAOEntity = NorthwindSystem.Data.Entities.Category;
+using NorthwindSystem.Data;
 
 namespace NorthwindSystem.Persistence.Implementation
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly DbContext _dbContext;
+        private readonly NorthwindSystemContext _dbContext;
 
-        public CategoryRepository(DbContext dbContext)
+        public CategoryRepository(NorthwindSystemContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         public async Task<int> Add(CategoryDAOEntity entity)
         {
-            var resultEntity = _dbContext.Set<CategoryDAOEntity>().Add(entity);
+            var resultEntity = await _dbContext.Set<CategoryDAOEntity>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
             return resultEntity.Entity.CategoryId;
@@ -49,10 +47,10 @@ namespace NorthwindSystem.Persistence.Implementation
 
         public async Task Update(CategoryDAOEntity entity)
         {
-            var product = _dbContext.Set<CategoryDAOEntity>().Where(a => a.CategoryId == entity.CategoryId).FirstOrDefault();
-            if (product != null)
+            var category = _dbContext.Set<CategoryDAOEntity>().Where(a => a.CategoryId == entity.CategoryId).FirstOrDefault();
+            if (category != null)
             {
-                product = entity;
+                _dbContext.Set<CategoryDAOEntity>().Update(entity);
                 await _dbContext.SaveChangesAsync();
             }
         }
