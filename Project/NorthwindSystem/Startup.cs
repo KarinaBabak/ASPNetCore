@@ -17,6 +17,9 @@ using NorthwindSystem.BLL.Interface;
 using NorthwindSystem.Data;
 using NorthwindSystem.Middleware;
 using NorthwindSystem.Persistence;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Diagnostics;
+using System.IO;
 
 namespace NorthwindSystem
 {
@@ -62,8 +65,13 @@ namespace NorthwindSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILogger<Startup> logger)
         {
+            applicationLifetime.ApplicationStarted.Register(() =>
+            {
+                OnApplicationStart(env, logger);
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -85,6 +93,20 @@ namespace NorthwindSystem
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void OnApplicationStart(IHostingEnvironment hostingEnvironment, ILogger<Startup> logger)
+        {
+            logger.LogInformation($"Application {hostingEnvironment.ApplicationName} starting " +
+                $"work at {hostingEnvironment.ContentRootPath}");
+            logger.LogInformation("Application configuration reading start");
+
+            foreach (var configEntry in Configuration.AsEnumerable())
+            {
+                logger.LogTrace($"{configEntry.Key} : {configEntry.Value}");
+            }
+
+            logger.LogInformation("Application configuration reading end");
         }
     }
 }
