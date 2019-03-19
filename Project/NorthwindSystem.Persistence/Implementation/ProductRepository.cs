@@ -13,7 +13,6 @@ namespace NorthwindSystem.Persistence.Implementation
 {
     public class ProductRepository : IProductRepository
     {
-        //private readonly NorthwindSystemContext _dbContext;
         private readonly NorthwindSystemContext _dbContext;
 
         public ProductRepository(NorthwindSystemContext dbContext)
@@ -42,7 +41,7 @@ namespace NorthwindSystem.Persistence.Implementation
 
         public async Task<IEnumerable<ProductDAOEntity>> GetAll()
         {
-            return await _dbContext.Products.ToListAsync();
+            return await _dbContext.Products.Include(p => p.Category).Include(p => p.Supplier).ToListAsync();
         }
 
         public async Task<ProductDAOEntity> GetById(int entityId)
@@ -52,12 +51,11 @@ namespace NorthwindSystem.Persistence.Implementation
 
         public async Task<IEnumerable<ProductDAOEntity>> GetNumberItems(int number)
         {
-            return  await _dbContext.Products.Take(number).ToListAsync();
+            return await _dbContext.Products.Include(p => p.Category).Include(p => p.Supplier).Take(number).ToListAsync();
         }
 
         public async Task Update(ProductDAOEntity entity)
         {
-            //var product = _dbContext.Products.Where(a => a.ProductId == entity.ProductId).FirstOrDefault();
             if (entity != null)
             {
                 _dbContext.Products.Update(entity);

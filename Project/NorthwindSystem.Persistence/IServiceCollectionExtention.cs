@@ -10,6 +10,7 @@ namespace NorthwindSystem.Persistence
         public static void RegisterPersistenceServices(this IServiceCollection services)
         {
             services.AddTransient<IProductRepository, ProductRepository>();
+            services.AddTransient<ISupplierRepository, SupplierRepository>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
         }
     }

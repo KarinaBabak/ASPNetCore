@@ -12,11 +12,13 @@ namespace NorthwindSystem.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly ISupplierService _supplierService;
 
-        public ProductController(IProductService productService, ICategoryService categoryService)
+        public ProductController(IProductService productService, ICategoryService categoryService, ISupplierService supplierService)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _supplierService = supplierService;
         }
 
         public async Task<IActionResult> Index()
@@ -75,7 +77,7 @@ namespace NorthwindSystem.Controllers
             return new CreateUpdateProductViewModel()
             {
                 Categories = await _categoryService.GetAll(),
-                Suppliers = new List<SupplierDto>(), // await _supplierService.GetAll(),
+                Suppliers = await _supplierService.GetAll(),
                 Product = productId.HasValue ? await _productService.GetById(productId.Value) : null
             };
         }

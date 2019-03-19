@@ -58,7 +58,8 @@ namespace NorthwindSystem
             services.RegisterPersistenceServices();
             //services.AddTransient<IConfiguration, Configuration>();
             services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<ICategoryService, Configuration>();
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ISupplierService, SupplierService>();
             services.AddTransient<ILocalConfiguration, BLLConfiguration>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -81,6 +82,8 @@ namespace NorthwindSystem
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

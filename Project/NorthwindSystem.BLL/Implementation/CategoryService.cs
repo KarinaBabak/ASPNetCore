@@ -9,12 +9,12 @@ using CategoryDAOEntity = NorthwindSystem.Data.Entities.Category;
 
 namespace NorthwindSystem.BLL.Implementation
 {
-    public class Configuration : ICategoryService
+    public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public Configuration(ICategoryRepository repository, IMapper mapper)
+        public CategoryService(ICategoryRepository repository, IMapper mapper)
         {
             _categoryRepository = repository;
             _mapper = mapper;
