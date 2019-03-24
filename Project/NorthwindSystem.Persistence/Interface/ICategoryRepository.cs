@@ -8,5 +8,6 @@ namespace NorthwindSystem.Persistence.Interface
 {
     public interface ICategoryRepository : IRepository<CategoryDAOEntity>
     {
+        Task<byte[]> GetImage(int categoryId);
     }
 }

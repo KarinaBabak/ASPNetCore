@@ -11,5 +11,6 @@ namespace NorthwindSystem.BLL.Interface
         Task Delete(CategoryDto model);
         Task<CategoryDto> GetById(int modelId);
         Task<IEnumerable<CategoryDto>> GetAll();
+        Task<byte[]> GetImage(int categoryId);
     }
 }

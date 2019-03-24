@@ -48,5 +48,10 @@ namespace NorthwindSystem.BLL.Implementation
             var category = _mapper.Map<CategoryDAOEntity>(entity);
             await _categoryRepository.Update(category);
         }
+
+        public async Task<byte[]> GetImage(int categoryId)
+        {
+            return await _categoryRepository.GetImage(categoryId);
+        }
     }
 }

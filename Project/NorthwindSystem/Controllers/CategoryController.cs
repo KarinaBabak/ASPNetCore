@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace NorthwindSystem.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private const string _imageContentType = "image/bmp";
 
         public CategoryController(ICategoryService categoryService)
         {
@@ -22,5 +24,26 @@ namespace NorthwindSystem.Controllers
 
             return View(categories);
         }
+
+        public async Task<IActionResult> GetImage(int categoryId)
+        {
+            var image = await _categoryService.GetImage(categoryId);
+
+            if (image == null)
+            {
+                return NotFound();
+            }
+            var stream = new MemoryStream(image);
+            return File(stream, _imageContentType);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int categoryId)
+        {
+            ViewBag.Method = "Update Picture";
+            var category = await _categoryService.GetById(categoryId);
+            return View("UpdatePictureView", category);
+        }
+
     }
 }
