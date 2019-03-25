@@ -53,5 +53,10 @@ namespace NorthwindSystem.BLL.Implementation
         {
             return await _categoryRepository.GetImage(categoryId);
         }
+
+        public async Task UpdateImage(int categoryId, byte[] updatedImage)
+        {
+            await _categoryRepository.UpdateImage(categoryId, updatedImage);
+        }
     }
 }

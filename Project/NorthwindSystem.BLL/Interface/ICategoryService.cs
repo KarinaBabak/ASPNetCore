@@ -12,5 +12,7 @@ namespace NorthwindSystem.BLL.Interface
         Task<CategoryDto> GetById(int modelId);
         Task<IEnumerable<CategoryDto>> GetAll();
         Task<byte[]> GetImage(int categoryId);
+
+        Task UpdateImage(int categoryId, byte[] updatedImage);
     }
 }

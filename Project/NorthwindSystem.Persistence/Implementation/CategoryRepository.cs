@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NorthwindSystem.Persistence.Interface;
 using CategoryDAOEntity = NorthwindSystem.Data.Entities.Category;
 using NorthwindSystem.Data;
+using System;
 
 namespace NorthwindSystem.Persistence.Implementation
 {
@@ -58,13 +59,34 @@ namespace NorthwindSystem.Persistence.Implementation
 
         public async Task<byte[]> GetImage(int categoryId)
         {
-            var category = await _dbContext.Categories.FirstOrDefaultAsync(x => x.CategoryId == categoryId);
+            var category = await GetById(categoryId);
             return GetCorrectImage(category?.Picture);
         }
 
         private byte[] GetCorrectImage(byte[] image)
         {
             return image?.Skip(GarbageBytesNumber).ToArray();
+        }
+
+        public async Task UpdateImage(int categoryId, byte[] updatedImage)
+        {
+            var updatedSecuredImage = GenerateGarbageData().Concat(updatedImage);
+            var category = await GetById(categoryId);
+            if (category == null)
+            {
+                return;
+            }
+            category.Picture = updatedSecuredImage.ToArray();
+            _dbContext.Update(category);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private byte[] GenerateGarbageData(int size = GarbageBytesNumber)
+        {
+            var result = new byte[GarbageBytesNumber];
+            new Random().NextBytes(result);
+
+            return result;
         }
     }
 }

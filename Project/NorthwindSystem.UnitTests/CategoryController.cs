@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NorthwindSystem.BLL.Interface;
 using NorthwindSystem.Controllers;
 using NorthwindSystem.Data.DTOModels;
@@ -33,6 +35,74 @@ namespace NorthwindSystem.UnitTests
 
             // Assert
             _categoryServiceMock.Verify(service => service.GetAll(), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetImage_One_FetchImage()
+        {
+            // Arrange
+            var categoryId = 1;
+            
+            // Act
+            await _controller.GetImage(categoryId);
+
+            // Assert
+            _categoryServiceMock.Verify(x => x.GetImage(categoryId), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetImage_ReturnImage()
+        {
+            // Arrange
+            var categoryId = 1;
+            _categoryServiceMock.Setup(x => x.GetImage(categoryId)).ReturnsAsync(new byte[] { });
+
+            // Act
+            var result = await _controller.GetImage(1);
+
+            // Assert
+            Assert.IsType<FileStreamResult>(result);
+        }
+
+        [Fact]
+        public async Task GetImage_NotFoundResult()
+        {
+            // Arrange
+            var categoryId = 1;
+            _categoryServiceMock.Setup(x => x.GetImage(categoryId)).ReturnsAsync((byte[])null);
+
+            // Act
+            var result = await _controller.GetImage(1);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task Update_ExistingPicture_Save()
+        {
+            // Arrange
+            var categoryId = 1;
+            var bytes = new byte[] { 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20 };
+
+            // Act
+            var result = await _controller.Update(categoryId, null);
+
+            // Assert
+            _categoryServiceMock.Verify(x => x.UpdateImage(categoryId, bytes), Times.Never);
+        }
+
+        [Fact]
+        public async Task Update_NotExistingPicture_NotSave()
+        {
+            // Arrange
+            var categoryId = 1;
+
+            // Act
+            var result = await _controller.Update(categoryId, null);
+
+            // Assert
+            _categoryServiceMock.Verify(x => x.UpdateImage(categoryId, (byte[])null), Times.Never);
         }
 
         private IEnumerable<CategoryDto> GetMockedCategories()

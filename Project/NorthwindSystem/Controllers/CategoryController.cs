@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NorthwindSystem.BLL.Interface;
 
@@ -43,6 +44,21 @@ namespace NorthwindSystem.Controllers
             ViewBag.Method = "Update Picture";
             var category = await _categoryService.GetById(categoryId);
             return View("UpdatePictureView", category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(int categoryId, IFormFile picture)
+        {
+            if (picture != null)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await picture.CopyToAsync(stream);
+                    await _categoryService.UpdateImage(categoryId, stream.ToArray());
+                }
+            }      
+            
+            return RedirectToAction("Index");
         }
 
     }
