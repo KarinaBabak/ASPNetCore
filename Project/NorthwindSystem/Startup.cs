@@ -90,11 +90,34 @@ namespace NorthwindSystem
             app.UseNodeModules(env.ContentRootPath);
             app.UseCookiePolicy();
 
+            app.UseResponseCaching();
+
+            app.Use(async (context, next) =>
+            {
+                // contentType
+
+                context.Response.GetTypedHeaders().CacheControl =
+                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(10)
+                    };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+                    new string[] { "Accept-Encoding" };
+
+                await next();
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                   name: "images",
+                   template: "images/{categoryId}",
+                   defaults: new { controller = "Category", action = "GetImage" });
+
+                routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");              
             });
         }
 
