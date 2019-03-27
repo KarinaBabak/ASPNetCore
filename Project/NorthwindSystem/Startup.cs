@@ -92,21 +92,23 @@ namespace NorthwindSystem
 
             app.UseResponseCaching();
 
-            app.Use(async (context, next) =>
-            {
-                // contentType
+            //app.Use(async (context, next) =>
+            //{
+            //    // contentType
 
-                context.Response.GetTypedHeaders().CacheControl =
-                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromSeconds(10)
-                    };
-                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-                    new string[] { "Accept-Encoding" };
+            //    context.Response.GetTypedHeaders().CacheControl =
+            //        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+            //        {
+            //            Public = true,
+            //            MaxAge = TimeSpan.FromSeconds(10)
+            //        };
+            //    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+            //        new string[] { "Accept-Encoding" };
 
-                await next();
-            });
+            //    await next();
+
+
+            app.UseImageCaching();
 
             app.UseMvc(routes =>
             {
