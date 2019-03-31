@@ -20,6 +20,9 @@ using NorthwindSystem.Persistence;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
+using NorthwindSystem.Helpers;
+using NorthwindSystem.Models;
+using NorthwindSystem.Filters;
 
 namespace NorthwindSystem
 {
@@ -56,13 +59,18 @@ namespace NorthwindSystem
                 options.UseSqlServer(Configuration.GetConnectionString("NorthwindSystemDbConnection")));
 
             services.RegisterPersistenceServices();
-            //services.AddTransient<IConfiguration, Configuration>();
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ISupplierService, SupplierService>();
             services.AddTransient<ILocalConfiguration, BLLConfiguration>();
+            services.AddSingleton<IImageCacheHelper, FileImageCacheHelper>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ActionLoggingFilterFactory());
+
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,25 +98,12 @@ namespace NorthwindSystem
             app.UseNodeModules(env.ContentRootPath);
             app.UseCookiePolicy();
 
-            app.UseResponseCaching();
-
-            //app.Use(async (context, next) =>
-            //{
-            //    // contentType
-
-            //    context.Response.GetTypedHeaders().CacheControl =
-            //        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-            //        {
-            //            Public = true,
-            //            MaxAge = TimeSpan.FromSeconds(10)
-            //        };
-            //    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-            //        new string[] { "Accept-Encoding" };
-
-            //    await next();
-
-
-            app.UseImageCaching();
+            app.UseImageCaching(new CachingOptions
+            {
+                DirectoryPath = "C:/NorthwindSystem/CachedImages",
+                MaxImagesCount = 5,
+                CacheExpirationTime = new TimeSpan(0, 0, 60)
+            });
 
             app.UseMvc(routes =>
             {
