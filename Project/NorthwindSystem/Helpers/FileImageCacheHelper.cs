@@ -29,38 +29,34 @@ namespace NorthwindSystem.Helpers
             }
         }
 
-        public async Task<Stream> GetOrCreate(string key)
+        public async Task<Stream> Get(string key)
         {
-            // TODO: reset timer
             string imageFilePath = GetImageFileFullPath(key);
-            using (MemoryStream stream = new MemoryStream())
+            if (!File.Exists(imageFilePath))
             {
-                if (!File.Exists(imageFilePath))
-                {
-                    await Create(stream, imageFilePath);
-                }
-                else
-                {
-                    using (var fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
-                    {
-                        await fileStream.CopyToAsync(stream);
-                    }
-                }
-                return stream;
-            }            
+                return null;
+            }
+
+            MemoryStream stream = new MemoryStream();
+            using (var fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+            {
+                await fileStream.CopyToAsync(stream);
+            }
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
         }
 
-        private async Task Create(MemoryStream imageStream, string imageFilePath)
+        public async Task Save(Stream imageStream, string key)
         {
+            string imageFilePath = GetImageFileFullPath(key);
             var filesNumber = Directory.EnumerateFiles(_options.DirectoryPath).Count();
+
             if (filesNumber < _options.MaxImagesCount)
             {
                 using (var fileStream = new FileStream(imageFilePath, FileMode.Create, FileAccess.Write))
                 {
-                    //fileStream.Seek(0, SeekOrigin.End);
-                    //await fileStream.WriteAsync(imageStream.ToArray());
-                    //imageStream.Seek(0, SeekOrigin.Begin);
-                    imageStream.CopyTo(fileStream);
+                    var memoryStream = imageStream as MemoryStream;
+                    await fileStream.WriteAsync(memoryStream.ToArray());
                 }
             }
         }
@@ -98,5 +94,6 @@ namespace NorthwindSystem.Helpers
         {
             return (DateTime.Now + _options.CacheExpirationTime).Millisecond;
         }
+
     }
 }

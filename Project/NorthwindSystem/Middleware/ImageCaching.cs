@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using NorthwindSystem.Helpers;
 using NorthwindSystem.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace NorthwindSystem.Middleware
         {
             bool isImageContentType = httpContext.Response.ContentType?.Contains(imageType) ?? false;
             bool isImageType = httpContext.Request?.Path.Value.Contains(imageType, StringComparison.InvariantCultureIgnoreCase) ?? false;
-
+            var responseStream = httpContext.Response.Body;
             if (!isImageType)
             {
                 await _next(httpContext);
@@ -37,18 +36,22 @@ namespace NorthwindSystem.Middleware
             }
 
             var imageId = httpContext.Request.Path.Value.Split('/').Last();
-            var stream = await _cacheHelper.GetOrCreate(imageId);
-            await Proceed(httpContext, stream);
-        }
+            var imageStream = await _cacheHelper.Get(imageId);
 
-        private async Task Proceed(HttpContext httpContext, Stream stream)
-        {
-            //using (var stream = new MemoryStream())
+            if (imageStream != null)
             {
-                Stream responseBody = httpContext.Response.Body;
+                await imageStream.CopyToAsync(responseStream);
+                return;
+            }
+
+            using (var stream = new MemoryStream())
+            {
                 httpContext.Response.Body = stream;
-                //stream.Seek(0, SeekOrigin.Begin);
+
                 await _next(httpContext);
+                await _cacheHelper.Save(stream, imageId);
+                stream.Seek(0, SeekOrigin.Begin);
+                await stream.CopyToAsync(responseStream);
             }
         }
 }

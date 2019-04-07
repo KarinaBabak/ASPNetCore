@@ -10,7 +10,7 @@ namespace NorthwindSystem.Helpers
     public interface IImageCacheHelper
     {
         void InitCacheOptions(CachingOptions cacheOptions);
-        //Task Save(Stream imageStream, string key); //GetOrCreatу
-        Task<Stream> GetOrCreate(string key);
+        Task<Stream> Get(string key);
+        Task Save(Stream imageStream, string key);
     }
 }
