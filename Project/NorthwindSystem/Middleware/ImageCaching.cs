@@ -29,6 +29,7 @@ namespace NorthwindSystem.Middleware
             bool isImageContentType = httpContext.Response.ContentType?.Contains(imageType) ?? false;
             bool isImageType = httpContext.Request?.Path.Value.Contains(imageType, StringComparison.InvariantCultureIgnoreCase) ?? false;
             var responseStream = httpContext.Response.Body;
+
             if (!isImageType)
             {
                 await _next(httpContext);

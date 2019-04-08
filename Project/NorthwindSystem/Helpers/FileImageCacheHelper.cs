@@ -18,9 +18,10 @@ namespace NorthwindSystem.Helpers
             _options = cacheOptions;
             _timer = new Timer()
             {
-                Interval = GetCacheExpirationPeriod(),
-                AutoReset = false
+                Interval = _options.CacheExpirationTime.TotalMilliseconds,
+                AutoReset = true
             };
+            
             _timer.Elapsed += (s, e) => OnTimedElapsed();
 
             if (!Directory.Exists(_options.DirectoryPath))
@@ -31,18 +32,11 @@ namespace NorthwindSystem.Helpers
 
         public async Task<Stream> Get(string key)
         {
-            string imageFilePath = GetImageFileFullPath(key);
-            if (!File.Exists(imageFilePath))
-            {
-                return null;
-            }
+            _timer.Stop();
 
-            MemoryStream stream = new MemoryStream();
-            using (var fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
-            {
-                await fileStream.CopyToAsync(stream);
-            }
-            stream.Seek(0, SeekOrigin.Begin);
+            var stream = await GetCachedImage(key);
+
+            _timer.Start();
             return stream;
         }
 
@@ -61,6 +55,24 @@ namespace NorthwindSystem.Helpers
             }
         }
 
+        private async Task<Stream> GetCachedImage(string key)
+        {
+            string imageFilePath = GetImageFileFullPath(key);
+            if (!File.Exists(imageFilePath))
+            {
+                return null;
+            }
+
+            MemoryStream stream = new MemoryStream();
+            using (var fileStream = new FileStream(imageFilePath, FileMode.Open, FileAccess.Read))
+            {
+                await fileStream.CopyToAsync(stream);
+            }
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return stream;
+        }
+
         private string GetImageFileFullPath(string key)
         {
             return $"{_options.DirectoryPath}/{key}.{imageExtension}";
@@ -69,7 +81,6 @@ namespace NorthwindSystem.Helpers
         private void OnTimedElapsed()
         {
             Clean();
-            RefreshCacheExpirationTime();
         }
 
         private void Clean()
@@ -84,16 +95,5 @@ namespace NorthwindSystem.Helpers
                 }
             }
         }
-
-        private void RefreshCacheExpirationTime()
-        {
-            _timer.Interval = GetCacheExpirationPeriod();
-        }
-
-        private double GetCacheExpirationPeriod()
-        {
-            return (DateTime.Now + _options.CacheExpirationTime).Millisecond;
-        }
-
     }
 }
