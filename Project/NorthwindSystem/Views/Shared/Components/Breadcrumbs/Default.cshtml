@@ -1,0 +1,13 @@
+﻿@model IEnumerable<BreadcrumbItemViewModel>
+
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+            @foreach (var item in Model)
+            {
+                <li class="breadcrumb-item"><a asp-controller="@item.ControllerName" asp-action="@item.Path">@item.Title</a></li>
+            }
+        </ol>
+    </nav>
+</div>

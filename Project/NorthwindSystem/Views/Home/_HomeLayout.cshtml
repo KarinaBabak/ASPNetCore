@@ -18,34 +18,20 @@
 </head>
 <body>
     <header>
-        <!--Navbar-->
-        @if (IsSectionDefined("Header"))
-        {
-            RenderSection("Header", false);
-        }
-        else
-        {
-            <partial name="_HeaderNavBarPartial" />
-        }
+        <partial name="_HeaderNavBarPartial" />
     </header>
-    
+
     <div class="container">
         <partial name="_CookieConsentPartial" />
-        @await Component.InvokeAsync("Breadcrumbs")
         <main role="main" class="pb-3">
+            @await Component.InvokeAsync("Breadcrumbs")
             @RenderBody()
+            <img class="home-img" src="http://tiny.cc/vp054y" />
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        @if (IsSectionDefined("Footer"))
-        {
-            RenderSection("Footer", false);
-        }
-        else
-        {
-            <partial name="_FooterPartial" />
-        }
+        <partial name="_FooterPartial" />
     </footer>
 
     <environment include="Development">
@@ -75,7 +61,5 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @RenderSection("Scripts", required: false)
 </body>
 </html>
