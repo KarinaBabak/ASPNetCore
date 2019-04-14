@@ -23,7 +23,8 @@
                 <td>@category.Id</td>
                 <td>@category.Name</td>
                 <td>@category.Description</td>
-                <td><img src='@Url.Action("GetImage", new {categoryId = category.Id})' alt="" /></td>
+                @*<td><img src='@Url.Action("GetImage", new {categoryId = category.Id})' alt="" /></td>*@
+                <td><a northwind-image-id="category.Id"/>Open Image</td>
                 <td><a asp-action="Update" asp-route-categoryId=@category.Id>Edit</a></td>
             </tr>
         }
