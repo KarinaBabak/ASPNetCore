@@ -23,6 +23,7 @@ using System.IO;
 using NorthwindSystem.Helpers;
 using NorthwindSystem.Models;
 using NorthwindSystem.Filters;
+using NorthwindSystem.DIConfiguration;
 
 namespace NorthwindSystem
 {
@@ -46,23 +47,13 @@ namespace NorthwindSystem
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            // Auto Mapper Configurations
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
+            services.RegisterAutoMapperDependencies(Configuration);
 
-            IMapper mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
+            services.RegisterInfrastractureDependencies(Configuration);
 
-            services.AddDbContext<NorthwindSystemContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("NorthwindSystemDbConnection")));
+            services.RegisterPersistenceDependencies();
+            services.RegisterBLLDependencies();
 
-            services.RegisterPersistenceServices();
-            services.AddTransient<IProductService, ProductService>();
-            services.AddTransient<ICategoryService, CategoryService>();
-            services.AddTransient<ISupplierService, SupplierService>();
-            services.AddTransient<ILocalConfiguration, BLLConfiguration>();
             services.AddSingleton<IImageCacheHelper, FileImageCacheHelper>();
 
             services.AddMvc(options =>
