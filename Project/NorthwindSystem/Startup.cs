@@ -24,6 +24,7 @@ using NorthwindSystem.Helpers;
 using NorthwindSystem.Models;
 using NorthwindSystem.Filters;
 using NorthwindSystem.DIConfiguration;
+using Microsoft.AspNetCore.Identity;
 
 namespace NorthwindSystem
 {
@@ -56,6 +57,8 @@ namespace NorthwindSystem
 
             services.AddSingleton<IImageCacheHelper, FileImageCacheHelper>();
 
+            InstallIdentityDependencies(services);
+
             services.AddMvc(options =>
             {
                 options.Filters.Add(new ActionLoggingFilterFactory());
@@ -86,6 +89,7 @@ namespace NorthwindSystem
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseNodeModules(env.ContentRootPath);
             app.UseCookiePolicy();
 
@@ -121,6 +125,35 @@ namespace NorthwindSystem
             }
 
             logger.LogInformation("Application configuration reading end");
+        }
+
+        private void InstallIdentityDependencies(IServiceCollection services)
+        {
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+
         }
     }
 }

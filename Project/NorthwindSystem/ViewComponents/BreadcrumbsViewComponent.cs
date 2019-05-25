@@ -17,8 +17,8 @@ namespace NorthwindSystem.ViewComponents
         private IEnumerable<BreadcrumbItemViewModel> GetCurrentBreadcrumbTrail()
         {
             var breadcrumbs = new List<BreadcrumbItemViewModel>();
-            var controller = ViewContext.RouteData.Values["controller"].ToString();
-            var action = ViewContext.RouteData.Values["action"].ToString();
+            var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+            var action = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
 
             if (controller.Equals("Home"))
             {
