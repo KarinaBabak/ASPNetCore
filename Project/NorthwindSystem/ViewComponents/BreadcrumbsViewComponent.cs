@@ -19,17 +19,18 @@ namespace NorthwindSystem.ViewComponents
             var breadcrumbs = new List<BreadcrumbItemViewModel>();
             var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
             var action = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
-
             if (controller.Equals("Home"))
             {
                 return breadcrumbs;
             }
+            
+            var title = string.IsNullOrEmpty(controller) ? GetLastUrlPath() : string.Empty;
 
             breadcrumbs.Add(
                 new BreadcrumbItemViewModel()
                 {
                     ControllerName = controller,
-                    Title = controller,
+                    Title = title,
                     Path = _indexActionName,
                 });
 
@@ -44,6 +45,12 @@ namespace NorthwindSystem.ViewComponents
             }
 
             return breadcrumbs;
+        }
+
+        private string GetLastUrlPath()
+        {
+            var pathElements = HttpContext.Request.Path.ToString().Split('/');
+            return pathElements != null && pathElements.Length > 0 ? pathElements[pathElements.Length - 1] : string.Empty;
         }
     }
 }

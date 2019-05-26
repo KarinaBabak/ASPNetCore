@@ -1,30 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NorthwindSystem.BLL;
-using NorthwindSystem.BLL.Implementation;
-using NorthwindSystem.BLL.Interface;
-using NorthwindSystem.Data;
 using NorthwindSystem.Middleware;
-using NorthwindSystem.Persistence;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Diagnostics;
-using System.IO;
 using NorthwindSystem.Helpers;
 using NorthwindSystem.Models;
 using NorthwindSystem.Filters;
 using NorthwindSystem.DIConfiguration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 
 namespace NorthwindSystem
 {
@@ -57,7 +48,7 @@ namespace NorthwindSystem
 
             services.AddSingleton<IImageCacheHelper, FileImageCacheHelper>();
 
-            InstallIdentityDependencies(services);
+            RegisterIdentityDependencies(services);
 
             services.AddMvc(options =>
             {
@@ -127,7 +118,7 @@ namespace NorthwindSystem
             logger.LogInformation("Application configuration reading end");
         }
 
-        private void InstallIdentityDependencies(IServiceCollection services)
+        private void RegisterIdentityDependencies(IServiceCollection services)
         {
             services.Configure<IdentityOptions>(options =>
             {
@@ -154,6 +145,12 @@ namespace NorthwindSystem
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
 
+            // Azure AD authentication
+            //services.AddAuthentication()
+            //    .AddOpenIdConnect(AzureADDefaults.AuthenticationScheme, "AzureAD", options =>
+            //    {
+            //        Configuration.Bind("AzureAd", options);
+            //    });
         }
     }
 }

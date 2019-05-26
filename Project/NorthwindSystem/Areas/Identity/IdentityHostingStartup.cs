@@ -20,6 +20,8 @@ namespace NorthwindSystem.Areas.Identity
                         context.Configuration.GetConnectionString("NorthwindIdentityContextConnection")));
 
                 services.AddDefaultIdentity<IdentityUser>()
+                    .AddRoles<IdentityRole>()
+                    .AddDefaultUI(UIFramework.Bootstrap4)
                     .AddEntityFrameworkStores<NorthwindIdentityContext>();
             });
         }
