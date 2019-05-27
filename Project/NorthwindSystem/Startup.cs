@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using NorthwindSystem.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace NorthwindSystem
 {
@@ -125,6 +126,15 @@ namespace NorthwindSystem
 
         private void RegisterIdentityDependencies(IServiceCollection services)
         {
+            services.AddDbContext<NorthwindIdentityContext>(options =>
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("NorthwindIdentityContextConnection")));
+
+            services.AddDefaultIdentity<IdentityUser>()
+                    .AddRoles<IdentityRole>()
+                    .AddDefaultUI(UIFramework.Bootstrap4)
+                    .AddEntityFrameworkStores<NorthwindIdentityContext>();
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
