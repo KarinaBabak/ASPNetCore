@@ -16,6 +16,8 @@ using NorthwindSystem.Filters;
 using NorthwindSystem.DIConfiguration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using NorthwindSystem.Areas.Identity.Data;
 
 namespace NorthwindSystem
 {
@@ -49,6 +51,9 @@ namespace NorthwindSystem
             services.AddSingleton<IImageCacheHelper, FileImageCacheHelper>();
 
             RegisterIdentityDependencies(services);
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddMvc(options =>
             {
