@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using NorthwindSystem.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 
 namespace NorthwindSystem
 {
@@ -92,7 +93,7 @@ namespace NorthwindSystem
 
             app.UseImageCaching(new CachingOptions
             {
-                DirectoryPath = "C:/NorthwindSystem/CachedImages",
+                DirectoryPath = "CachedImages", //env or "C:/NorthwindSystem/CachedImages",
                 MaxImagesCount = 5,
                 CacheExpirationTime = new TimeSpan(0, 0, 60)
             });
@@ -161,11 +162,14 @@ namespace NorthwindSystem
             });
 
             // Azure AD authentication
-            //services.AddAuthentication()
-            //    .AddOpenIdConnect(AzureADDefaults.AuthenticationScheme, "AzureAD", options =>
-            //    {
-            //        Configuration.Bind("AzureAd", options);
-            //    });
+            services.AddAuthentication()
+                .AddOpenIdConnect(AzureADDefaults.AuthenticationScheme, "AzureAD", options =>
+                {
+                    Configuration.Bind("AzureAd", options);
+                    options.Authority = $"{ Configuration["AzureAd:Instance"] }{ Configuration["AzureAd:TenantId"] }/v2.0/";
+                    //options.MetadataAddress = $"http[s]://{Configuration["AzureAd: Instance"]}/{}/v2.0/.well-known/openid-configuration";
+                    options.RequireHttpsMetadata = false;
+                });
         }
     }
 }
