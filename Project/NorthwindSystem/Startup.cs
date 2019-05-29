@@ -93,8 +93,7 @@ namespace NorthwindSystem
 
             app.UseImageCaching(new CachingOptions
             {
-                DirectoryPath = "CachedImages", //env or "C:/NorthwindSystem/CachedImages",
-                MaxImagesCount = 5,
+                DirectoryPath = "C:/NorthwindSystem/CachedImages",
                 CacheExpirationTime = new TimeSpan(0, 0, 60)
             });
 
@@ -166,7 +165,7 @@ namespace NorthwindSystem
                 .AddOpenIdConnect(AzureADDefaults.AuthenticationScheme, "AzureAD", options =>
                 {
                     Configuration.Bind("AzureAd", options);
-                    options.Authority = $"{ Configuration["AzureAd:Instance"] }{ Configuration["AzureAd:TenantId"] }/v2.0/";
+                    options.Authority = $"{ Configuration["AzureAd:Instance"] }/{ Configuration["AzureAd:TenantId"] }/v2.0/";
                     //options.MetadataAddress = $"http[s]://{Configuration["AzureAd: Instance"]}/{}/v2.0/.well-known/openid-configuration";
                     options.RequireHttpsMetadata = false;
                 });
