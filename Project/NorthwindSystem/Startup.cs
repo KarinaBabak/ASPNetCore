@@ -166,8 +166,9 @@ namespace NorthwindSystem
                 {
                     Configuration.Bind("AzureAd", options);
                     options.Authority = $"{ Configuration["AzureAd:Instance"] }/{ Configuration["AzureAd:TenantId"] }/v2.0/";
-                    //options.MetadataAddress = $"http[s]://{Configuration["AzureAd: Instance"]}/{}/v2.0/.well-known/openid-configuration";
-                    options.RequireHttpsMetadata = false;
+                    options.Scope.Add("email");
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
                 });
         }
     }
