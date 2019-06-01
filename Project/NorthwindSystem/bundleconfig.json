@@ -8,13 +8,11 @@
     "minify": {
       "enabled": true,
       "renameLocals": true
-    },
-    "sourceMap": false
+    }
   },
   {
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
-      "wwwroot/js/site.js",
       "node_modules/bootstrap/dist/js/bootstrap.js",
       "node_modules/jquery/dist/jquery.js",
       "node_modules/jquery-validation/dist/jquery.validate.js",
@@ -23,7 +21,6 @@
     "minify": {
       "enabled": true,
       "renameLocals": true
-    },
-    "sourceMap": false
+    }
   }
 ]

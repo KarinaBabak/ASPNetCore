@@ -6,8 +6,9 @@
     <UserSecretsId>aspnet-Identity-79a3edd0-600D-4834-99C7-6FD43300FC7F</UserSecretsId>
   </PropertyGroup>
 
-
+  
   <ItemGroup>
+    <PackageReference Include="BuildBundlerMinifier" Version="2.9.406" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.2.0" />
@@ -34,5 +35,14 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+  <Target Name="PreCompileTarget" BeforeTargets="Build">
+    <Exec Command="gulp min" />
+  </Target>
 
 </Project>
